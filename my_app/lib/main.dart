@@ -164,8 +164,8 @@ class _MyHomePageState extends State<MyHomePage> {
   String printName(bool data) {
     String string;
     if (data == true)
-      string = "Please clean!";
-    else if (data == false) string = "clean";
+      string = "PLEASE CLEAN!";
+    else if (data == false) string = "Clean";
     return string;
   }
 
@@ -215,55 +215,55 @@ class _MyHomePageState extends State<MyHomePage> {
                 image: DecorationImage(
                     image: AssetImage('images/floorplan1.png')))),
         Container(
-            alignment: Alignment(-0.6, -0.5),
+            alignment: Alignment(-0.65, -0.2),
             child: MyLayoutWidget(
               string: "privRoom",
               text: '$privRoom',
             )),
         Container(
-            alignment: Alignment(-0.45, -0),
+            alignment: Alignment(-0.45, 0.4),
             child: MyLayoutWidget(
               string: "dinerRoom1",
               text: '$dinerRoom1',
             )),
         Container(
-            alignment: Alignment(0.2, 0.05),
+            alignment: Alignment(0.15, 0.35),
             child: MyLayoutWidget(
               string: "dinerRoom2",
               text: '$dinerRoom2',
             )),
         Container(
-            alignment: Alignment(0.1, -0.5),
+            alignment: Alignment(0.12, -0.25),
             child: MyLayoutWidget(
               string: "dinerRoom3",
               text: '$dinerRoom3',
             )),
         Container(
-            alignment: Alignment(-0.85, 0.3),
+            alignment: Alignment(-0.95, 0.7),
             child: MyLayoutWidget(
               string: "studyArea1",
               text: '$studyArea1',
             )),
         Container(
-            alignment: Alignment(0.8, -0.2),
+            alignment: Alignment(0.9, -0.25),
             child: MyLayoutWidget(
               string: "studyArea2",
               text: '$studyArea2',
             )),
         Container(
-            alignment: Alignment(-0.45, 0.7),
+            alignment: Alignment(-0.55, 0.95),
             child: MyLayoutWidget(
               string: "restArea1",
               text: '$restArea1',
             )),
         Container(
-            alignment: Alignment(0.2, 0.7),
+            alignment: Alignment(0.3, 0.95),
             child: MyLayoutWidget(
               string: "restArea2",
               text: '$restArea2',
             )),
         Container(
-            alignment: Alignment(-0.15, -0.9),
+            alignment: Alignment(0.05, -0.85),
             child: MyLayoutWidget(
               string: "restArea3",
               text: '$restArea3',
@@ -284,9 +284,15 @@ class MyLayoutWidget extends StatelessWidget {
     dbRef.child(child).update({"cleaned": true, "needattention": false});
   }
 
+  bool getColor() {
+    if (text == "PLEASE CLEAN!") return true;
+    return false;
+  }
+
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
+      color: getColor() ? Colors.white : Colors.cyan,
       child: Text(text),
       onPressed: () {
         showAlertDialog(context);

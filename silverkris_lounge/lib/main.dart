@@ -105,15 +105,22 @@ class _MyHomePageState extends State<MyHomePage> {
     });
   }
 
+  void check(String child, int sum) {
+    if (sum >= 5) dbRef.child(child).update({"needattention": true});
+  }
+
   void listenPrivRoom() {
     subscription1 = dbRef.child('privRoom').onChildChanged.listen((event) {
       log(event.snapshot.key.toString());
       log(event.snapshot.value.toString());
-      if (event.snapshot.key == "realtime")
+      if (event.snapshot.key == "realtime") {
         setState(() {
           privRoom = checkStatus(event.snapshot.value);
-          intPrivRoom += 1;
         });
+        intPrivRoom += 1;
+        log("privRoom: " + intPrivRoom.toString());
+        check('privRoom', intPrivRoom);
+      }
     });
   }
 
@@ -125,6 +132,7 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           restArea1 = checkStatus(event.snapshot.value);
           intRestArea1 += 1;
+          check('restArea1', intRestArea1);
         });
     });
   }
@@ -137,6 +145,7 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           restArea2 = checkStatus(event.snapshot.value);
           intRestArea2 += 1;
+          check('restArea2', intRestArea2);
         });
     });
   }
@@ -149,6 +158,7 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           restArea3 = checkStatus(event.snapshot.value);
           intRestArea3 += 1;
+          check('restArea3', intRestArea3);
         });
     });
   }
@@ -161,6 +171,7 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           dinerRoom1 = checkStatus(event.snapshot.value);
           intDinerRoom1 += 1;
+          check('dinerRoom1', intDinerRoom1);
         });
     });
   }
@@ -173,6 +184,7 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           dinerRoom2 = checkStatus(event.snapshot.value);
           intDinerRoom2 += 1;
+          check('dinerRoom2', intDinerRoom2);
         });
     });
   }
@@ -185,6 +197,7 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           dinerRoom3 = checkStatus(event.snapshot.value);
           intDinerRoom3 += 1;
+          check('dinerRoom3', intDinerRoom3);
         });
     });
   }
@@ -197,6 +210,7 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           studyArea1 = checkStatus(event.snapshot.value);
           intStudyArea1 += 1;
+          check('studyArea1', intStudyArea1);
         });
     });
   }
@@ -209,6 +223,7 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           studyArea2 = checkStatus(event.snapshot.value);
           intStudyArea2 += 1;
+          check('studyArea2', intStudyArea2);
         });
     });
   }
@@ -221,6 +236,7 @@ class _MyHomePageState extends State<MyHomePage> {
         setState(() {
           studyArea3 = checkStatus(event.snapshot.value);
           intStudyArea3 += 1;
+          check('studyArea3', intStudyArea3);
         });
     });
   }
@@ -238,6 +254,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+    prepStatus();
     readData();
     listenPrivRoom();
     listenDinerRoom1();
