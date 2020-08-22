@@ -1,9 +1,8 @@
 import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:silverkris_lounge/availability.dart';
 import 'package:http/http.dart' as http;
-
-enum Status { empty, low, medium, high }
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -31,50 +30,67 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _apiGatewayURL = 'https://example.com/whatsit/create';
-  Status privRoom;
-  Status restArea1;
-  Status restArea2;
-  Status restArea3;
-  Status studyArea1;
-  Status studyArea2;
-  Status studyArea3;
-  Status dinerRoom1;
-  Status dinerRoom2;
-  Status dinerRoom3;
+  final _apiGatewayURL =
+      'https://mkr9pqnggb.execute-api.us-east-1.amazonaws.com/silverKris/silverKrisFunc';
+  String privRoom;
+  String restArea1;
+  String restArea2;
+  String restArea3;
+  String studyArea1;
+  String studyArea2;
+  String studyArea3;
+  String dinerRoom1;
+  String dinerRoom2;
+  String dinerRoom3;
 
-  void _initStatus() {
-    http
-        .get(this._apiGatewayURL)
-        .then((response) => response.body)
-        .then(json.decode)
-        .then((status) => status.forEach((post) {
-              setState(() {
-                privRoom = checkStatus(post['privRoom']);
-                restArea1 = checkStatus(post['restArea1']);
-                restArea2 = checkStatus(post['restArea2']);
-                restArea3 = checkStatus(post['restArea3']);
-                studyArea1 = checkStatus(post['studyArea1']);
-                studyArea2 = checkStatus(post['studyArea2']);
-                studyArea3 = checkStatus(post['studyArea3']);
-              });
-            }));
+  void prepStatus() {
+    privRoom = "EMPTY";
+    restArea1 = "EMPTY";
+    restArea2 = "EMPTY";
+    restArea3 = "EMPTY";
+    studyArea1 = "EMPTY";
+    studyArea2 = "EMPTY";
+    studyArea3 = "EMPTY";
+    dinerRoom1 = "EMPTY";
+    dinerRoom2 = "EMPTY";
+    dinerRoom3 = "EMPTY";
   }
 
-  Status checkStatus(int numPpl) {
+  Future _initStatus() async {
+    var response = await http.get(this._apiGatewayURL);
+    if (response.statusCode == 200) {
+      var status = jsonDecode(response.body);
+      setState(() {
+        privRoom = checkStatus(status['privRoom']);
+        restArea1 = checkStatus(status['restArea1']);
+        restArea2 = checkStatus(status['restArea2']);
+        restArea3 = checkStatus(status['restArea3']);
+        studyArea1 = checkStatus(status['studyArea1']);
+        studyArea2 = checkStatus(status['studyArea2']);
+        studyArea3 = checkStatus(status['studyArea3']);
+        dinerRoom1 = checkStatus(status['dinerRoom1']);
+        dinerRoom2 = checkStatus(status['dinerRoom2']);
+        dinerRoom3 = checkStatus(status['dinerRoom3']);
+      });
+    } else {
+      throw Exception('Failed to load album');
+    }
+  }
+
+  String checkStatus(int numPpl) {
     if (numPpl >= 10)
-      return Status.high;
-    else if (10 > numPpl && 5 >= numPpl)
-      return Status.high;
-    else if (numPpl < 5)
-      return Status.low;
+      return 'HIGH';
+    else if (10 > numPpl && numPpl >= 5)
+      return 'MEDIUM';
+    else if (numPpl < 5 && numPpl > 0)
+      return 'LOW';
     else
-      return Status.empty;
+      return 'EMPTY';
   }
 
   @override
   void initState() {
-    // _initStatus();
+    _initStatus();
     super.initState();
   }
 
@@ -82,34 +98,49 @@ class _MyHomePageState extends State<MyHomePage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
-          title: Text('SilverKris Lounge Availability', style: TextStyle(color: Colors.black)),
+          title:
+              Text('SilverKris Lounge', style: TextStyle(color: Colors.black)),
           centerTitle: true,
-          backgroundColor: Colors.white,),
-        body: SafeArea(
-            child: Stack(
-          children: <Widget>[
-            Container(
-                decoration: BoxDecoration(
-                    image: DecorationImage(
-                        image: AssetImage('assets/floorplan1.png')))),
-            Container(
-                alignment: Alignment(-0.48, -0.2), child: Text('$privRoom')),
-            Container(
-                alignment: Alignment(-0.3, 0.3), child: Text('$dinerRoom1')),
-            Container(
-                alignment: Alignment(0.1, 0.2), child: Text('$dinerRoom2')),
-            Container(
-                alignment: Alignment(0.1, -0.3), child: Text('$dinerRoom3')),
-            Container(
-                alignment: Alignment(-0.7, 0.55), child: Text('$studyArea1')),
-            Container(
-                alignment: Alignment(0.65, -0.35), child: Text('$studyArea2')),
-            Container(
-                alignment: Alignment(-0.45, 0.8), child: Text('$restArea1')),
-            Container(
-                alignment: Alignment(0.2, 0.8), child: Text('$restArea2')),
-            Container(alignment: Alignment(0.05, -0.8), child: Text('$restArea3')),
-          ],
-        )));
+          backgroundColor: Colors.white,
+        ),
+        body: Container(
+            alignment: Alignment.center,
+            decoration: BoxDecoration(
+                image: DecorationImage(
+                    image: AssetImage("assets/background.jpg"),
+                    fit: BoxFit.cover)),
+            child: RaisedButton(
+                child: Text('Availability'),
+                onPressed: () => Navigator.push(context,
+                        MaterialPageRoute(builder: (BuildContext context) {
+                      return AvailabilityScreen(
+                          privRoom: privRoom,
+                          dinerRoom1: dinerRoom1,
+                          dinerRoom2: dinerRoom2,
+                          dinerRoom3: dinerRoom3,
+                          restArea1: restArea1,
+                          restArea2: restArea2,
+                          restArea3: restArea3,
+                          studyArea1: studyArea1,
+                          studyArea2: studyArea2);
+                    })))));
+  }
+
+  Widget displayBox(String text) {
+    Color color;
+    if (text == "HIGH")
+      color = Colors.red;
+    else if (text == "MEDIUM")
+      color = Colors.yellow;
+    else if (text == "LOW")
+      color = Colors.green;
+    else
+      color = Colors.green;
+    return Container(
+        width: 75,
+        height: 20,
+        alignment: Alignment.center,
+        child: Text(text),
+        color: color);
   }
 }
