@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:silverkris_lounge/availability.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_database/firebase_database.dart';
 
 Future main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -30,6 +31,7 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
+  final dbRef = FirebaseDatabase.instance.reference();
   final _apiGatewayURL =
       'https://mkr9pqnggb.execute-api.us-east-1.amazonaws.com/silverKris/silverKrisFunc';
   String privRoom;
@@ -54,6 +56,16 @@ class _MyHomePageState extends State<MyHomePage> {
     dinerRoom1 = "EMPTY";
     dinerRoom2 = "EMPTY";
     dinerRoom3 = "EMPTY";
+  }
+
+  void writeData() {
+    dbRef.child('').set({});
+  }
+
+  void readData() {
+    dbRef.once().then((DataSnapshot dataSnapshot) {
+      print(dataSnapshot.value);
+    });
   }
 
   Future _initStatus() async {
@@ -90,6 +102,7 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
+    readData();
     _initStatus();
     super.initState();
   }
