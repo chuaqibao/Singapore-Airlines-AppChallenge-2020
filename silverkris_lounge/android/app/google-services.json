@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "146934137982",
+    "firebase_url": "https://krissilverdb.firebaseio.com",
+    "project_id": "krissilverdb",
+    "storage_bucket": "krissilverdb.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:146934137982:android:25fcd3739a5c111a31042f",
+        "android_client_info": {
+          "package_name": "com.example.silverkris_lounge"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "146934137982-vn3b9qdr999q496qjnnki81grndaiprh.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBqAJ1I6yFj7TaoUbSiPOVVHW7P84BA7UQ"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "146934137982-vn3b9qdr999q496qjnnki81grndaiprh.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
