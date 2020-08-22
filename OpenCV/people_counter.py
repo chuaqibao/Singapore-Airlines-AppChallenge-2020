@@ -34,14 +34,14 @@ db = firebase.database()
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
-ap.add_argument("-p", "--prototxt", required=True,
-                help="path to Caffe 'deploy' prototxt file")
-ap.add_argument("-m", "--model", required=True,
-                help="path to Caffe pre-trained model")
+# ap.add_argument("-p", "--prototxt", required=True,
+#                 help="path to Caffe 'deploy' prototxt file")
+# ap.add_argument("-m", "--model", required=True,
+#                 help="path to Caffe pre-trained model")
 ap.add_argument("-i", "--input", type=str,
                 help="path to optional input video file")
-ap.add_argument("-o", "--output", type=str,
-                help="path to optional output video file")
+# ap.add_argument("-o", "--output", type=str,
+#                 help="path to optional output video file")
 ap.add_argument("-c", "--confidence", type=float, default=0.4,
                 help="minimum probability to filter weak detections")
 ap.add_argument("-s", "--skip-frames", type=int, default=30,
@@ -57,18 +57,24 @@ CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
 
 # load our serialized model from disk
 print("[INFO] loading model...")
-net = cv2.dnn.readNetFromCaffe(args["prototxt"], args["model"])
+net = cv2.dnn.readNetFromCaffe("mobilenet_ssd/MobileNetSSD_deploy.prototxt", "mobilenet_ssd/MobileNetSSD_deploy.caffemode")
 
+"""
 # if a video path was not supplied, grab a reference to the webcam
 if not args.get("input", False):
     print("[INFO] starting video stream...")
     vs = VideoStream(src=0).start()
     time.sleep(2.0)
+"""
 
 # otherwise, grab a reference to the video file
-else:
-    print("[INFO] opening video file...")
-    vs = cv2.VideoCapture(args["input"])
+#else:
+print("[INFO] opening video file...")
+vs = cv2.VideoCapture(args["input"])
+
+# get the area name
+areaname = args["input"].split("/")[1].split(".")[0]
+print("Area:",areaname)
 
 # initialize the video writer (we'll instantiate later if need be)
 writer = None
@@ -90,14 +96,17 @@ duration = {}
 # initialize the total number of frames processed thus far, along
 # with the total number of objects that have moved either up or down
 totalFrames = 0
-totalDown = 0
-totalUp = 0
+#totalDown = 0
+#totalUp = 0
 
 # start the frames per second throughput estimator
 fps = FPS().start()
 
+framenumber = -1 
+numenteredlist = []
 # loop over frames from the video stream
 while True:
+    framenumber+=1
     # grab the next frame and handle if we are reading from either
     # VideoCapture or VideoStream
     frame = vs.read()
@@ -107,7 +116,7 @@ while True:
     # have reached the end of the video
     if args["input"] is not None and frame is None:
         break
-
+    
     # resize the frame to have a maximum width of 500 pixels (the
     # less data we have, the faster we can process it), then convert
     # the frame from BGR to RGB for dlib
@@ -231,17 +240,17 @@ while True:
         # otherwise, there is a trackable object so we can utilize it
         # to determine direction
         else:
-            # the difference between the y-coordinate of the *current*
-            # centroid and the mean of *previous* centroids will tell
-            # us in which direction the object is moving (negative for
-            # 'up' and positive for 'down')
+            # # the difference between the y-coordinate of the *current*
+            # # centroid and the mean of *previous* centroids will tell
+            # # us in which direction the object is moving (negative for
+            # # 'up' and positive for 'down')
 
-            if objectID not in duration and objectID in entered:
-                duration[objectID] = 1
-                print(duration)
-            elif objectID in duration and objectID in entered:
-                duration[objectID] += 1
-                print(duration)
+            # if objectID not in duration and objectID in entered:
+            #     duration[objectID] = 1
+            #     print(duration)
+            # elif objectID in duration and objectID in entered:
+            #     duration[objectID] += 1
+            #     print(duration)
 
             if bottomrightx > centroid[0] > topleftx and bottomrighty > centroid[1] > toplefty:
                 if objectID not in entered:
@@ -260,19 +269,36 @@ while True:
                     cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 255, 0), 2)
         cv2.circle(frame, (centroid[0], centroid[1]), 4, (0, 255, 0), -1)
 
+        # account for disappearing ids
         for index in entered:
             if index not in objects:
                 entered.remove(index)
 
     # construct a tuple of information we will be displaying on the
     # frame
-    info = [
+    # info = [
+    #     ("Entered", len(duration)),
+    #     ("Cross box", len(entered)),
+    #     ("Up", totalUp),
+    #     ("Down", totalDown),
+    #     ("Status", status),
+    # ]
+
+     info = [
         ("Entered", len(duration)),
-        ("Cross box", len(entered)),
-        ("Up", totalUp),
-        ("Down", totalDown),
-        ("Status", status),
+        ("Number", len(entered)),
+        ("Status", status)
     ]
+
+    # push into db only if the number of people who entered changes
+    if framenumber ==0:
+        numenteredlist.append(len(entered))
+    else:
+        # compare current number to previous number
+        if len(entered) != numenteredlist.get(framenumber-1):
+            #push to db
+            #db.child("use").child("Morty").update({"name": "Mortiest Morty"})
+            numenteredlist.append(len(entered))
 
     # loop over the info tuples and draw them on our frame
     for (i, (k, v)) in enumerate(info):

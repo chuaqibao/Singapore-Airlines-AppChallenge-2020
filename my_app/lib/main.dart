@@ -1,7 +1,9 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:http/http.dart' as http;
+import 'package:firebase_database/firebase_database.dart';
 
 enum Status { empty, low, medium, high }
 
@@ -31,7 +33,10 @@ class MyHomePage extends StatefulWidget {
 }
 
 class _MyHomePageState extends State<MyHomePage> {
-  final _apiGatewayURL = 'https://example.com/whatsit/create';
+  //final _apiGatewayURL = 'https://example.com/whatsit/create';
+  final dbRef = FirebaseDatabase.instance.reference();
+  var subscription;
+
   Status privRoom;
   Status restArea1;
   Status restArea2;
@@ -43,38 +48,48 @@ class _MyHomePageState extends State<MyHomePage> {
   Status dinerRoom2;
   Status dinerRoom3;
 
-  void _initStatus() {
-    http
-        .get(this._apiGatewayURL)
-        .then((response) => response.body)
-        .then(json.decode)
-        .then((status) => status.forEach((post) {
-              setState(() {
-                privRoom = checkStatus(post['privRoom']);
-                restArea1 = checkStatus(post['restArea1']);
-                restArea2 = checkStatus(post['restArea2']);
-                restArea3 = checkStatus(post['restArea3']);
-                studyArea1 = checkStatus(post['studyArea1']);
-                studyArea2 = checkStatus(post['studyArea2']);
-                studyArea3 = checkStatus(post['studyArea3']);
-              });
-            }));
+  void listenData() {
+    subscription = dbRef.onChildChanged.listen((event) {
+      setState(() {
+        log(event.snapshot.key.toString());
+        log(event.snapshot.value.toString());
+      });
+    });
   }
 
-  Status checkStatus(int numPpl) {
-    if (numPpl >= 10)
-      return Status.high;
-    else if (10 > numPpl && 5 >= numPpl)
-      return Status.high;
-    else if (numPpl < 5)
-      return Status.low;
-    else
-      return Status.empty;
-  }
+  // void _initStatus() {
+  //   http
+  //       .get(this._apiGatewayURL)
+  //       .then((response) => response.body)
+  //       .then(json.decode)
+  //       .then((status) => status.forEach((post) {
+  //             setState(() {
+  //               privRoom = checkStatus(post['privRoom']);
+  //               restArea1 = checkStatus(post['restArea1']);
+  //               restArea2 = checkStatus(post['restArea2']);
+  //               restArea3 = checkStatus(post['restArea3']);
+  //               studyArea1 = checkStatus(post['studyArea1']);
+  //               studyArea2 = checkStatus(post['studyArea2']);
+  //               studyArea3 = checkStatus(post['studyArea3']);
+  //             });
+  //           }));
+  // }
+
+  // Status checkStatus(int numPpl) {
+  //   if (numPpl >= 10)
+  //     return Status.high;
+  //   else if (10 > numPpl && 5 >= numPpl)
+  //     return Status.high;
+  //   else if (numPpl < 5)
+  //     return Status.low;
+  //   else
+  //     return Status.empty;
+  // }
 
   @override
   void initState() {
-    _initStatus();
+    listenData();
+    //_initStatus();
     super.initState();
   }
 
@@ -89,38 +104,38 @@ class _MyHomePageState extends State<MyHomePage> {
                 image: DecorationImage(
                     image: AssetImage('images/background.png')))),
         Container(alignment: Alignment(-0.6, -0.3), child: Text('Private Room')),
-        Container(alignment: Alignment(-0.6, -0.5), child: MyLayoutWidget()),
+        Container(alignment: Alignment(-0.6, -0.5), child: MyLayoutWidget(string: "privRoom",)),
         Container(alignment: Alignment(-0.6, -0.2), child: Text('$privRoom')),
 
         Container(alignment: Alignment(-0.45, 0.15), child: Text('Diner Room 1')),
         Container(alignment: Alignment(-0.45, 0.25), child: Text('$dinerRoom1')),
-        Container(alignment: Alignment(-0.45, -0), child: MyLayoutWidget()),
+        Container(alignment: Alignment(-0.45, -0), child: MyLayoutWidget(string: "dinerRoom1",)),
 
         Container(alignment: Alignment(0.2, 0.2), child: Text('Diner Room 2')),
         Container(alignment: Alignment(0.2, 0.3), child: Text('$dinerRoom2')),
-        Container(alignment: Alignment(0.2, 0.05), child: MyLayoutWidget()),
+        Container(alignment: Alignment(0.2, 0.05), child: MyLayoutWidget(string: "dinerRoom2",)),
 
         Container(alignment: Alignment(0.1, -0.3), child: Text('Diner Room 3')),
         Container(alignment: Alignment(0.1, -0.2), child: Text('$dinerRoom3')),
-        Container(alignment: Alignment(0.1, -0.5), child: MyLayoutWidget()),
+        Container(alignment: Alignment(0.1, -0.5), child: MyLayoutWidget(string: "dinerRoom3",)),
   
         Container(alignment: Alignment(-0.85, 0.45), child: Text('Study Area 1')),
-        Container(alignment: Alignment(-0.85, 0.3), child: MyLayoutWidget()),
+        Container(alignment: Alignment(-0.85, 0.3), child: MyLayoutWidget(string: "studyArea1",)),
         Container(alignment: Alignment(-0.85, 0.55), child: Text('$studyArea1')),
 
-        Container(alignment: Alignment(0.8, -0.2), child: MyLayoutWidget()),
+        Container(alignment: Alignment(0.8, -0.2), child: MyLayoutWidget(string: "studyArea2",)),
         Container(alignment: Alignment(0.8, -0.45), child: Text('Study Area 2')),
         Container(alignment: Alignment(0.8, -0.35), child: Text('$studyArea2')),
 
-        Container(alignment: Alignment(-0.45, 0.7), child: MyLayoutWidget()),
+        Container(alignment: Alignment(-0.45, 0.7), child: MyLayoutWidget(string: "restArea1",)),
         Container(alignment: Alignment(-0.45, 0.8), child: Text('Rest Area 1')),
         Container(alignment: Alignment(-0.45, 0.9), child: Text('$restArea1')),
 
-        Container(alignment: Alignment(0.2, 0.7), child: MyLayoutWidget()),
+        Container(alignment: Alignment(0.2, 0.7), child: MyLayoutWidget(string: "restArea2",)),
         Container(alignment: Alignment(0.2, 0.8), child: Text('Rest Area 2')),
         Container(alignment: Alignment(0.2, 0.9), child: Text('$restArea2')),
 
-        Container(alignment: Alignment(-0.15, -0.9), child: MyLayoutWidget()),
+        Container(alignment: Alignment(-0.15, -0.9), child: MyLayoutWidget(string: "restArea3",)),
         Container(alignment: Alignment(0.1, -0.85), child: Text('Rest Area 3')),
         Container(alignment: Alignment(0.1, -0.75), child: Text('$restArea3')),
       ],
@@ -130,18 +145,29 @@ class _MyHomePageState extends State<MyHomePage> {
 }
 
 class MyLayoutWidget extends StatelessWidget {
+  MyLayoutWidget({Key key, this.string}) : super(key: key);
+  final String string; 
+
+  final dbRef = FirebaseDatabase.instance.reference();
+
+  void writeData(String child) {
+    dbRef.child(child).update({
+      "cleaned": true,
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return RaisedButton(
-      child: Text('Cleaned!'),
+      child: Text("$_cleanchanged"),
       onPressed: () {
           showAlertDialog(context);
         },
       );
   }
 
-showAlertDialog(BuildContext context) { 
-  showDialog<int>(
+  showAlertDialog(BuildContext context) { 
+    showDialog<int>(
         context: context,
         builder: (BuildContext context) {
           return AlertDialog(
@@ -154,7 +180,10 @@ showAlertDialog(BuildContext context) {
                       borderRadius: BorderRadius.circular(10)),
                   color: Colors.white70,
                   child: Text('CLEANED'),
-                  onPressed: () {}),
+                  onPressed: () {
+                    writeData(string);
+                    Navigator.of(context).pop();
+                  }),
               actions: <Widget>[
                 FlatButton(
                     child: Text('Close'),
