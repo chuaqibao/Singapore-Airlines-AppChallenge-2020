@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:silverkris_lounge/availability.dart';
@@ -32,6 +33,7 @@ class MyHomePage extends StatefulWidget {
 
 class _MyHomePageState extends State<MyHomePage> {
   final dbRef = FirebaseDatabase.instance.reference();
+  var subscription;
   final _apiGatewayURL =
       'https://mkr9pqnggb.execute-api.us-east-1.amazonaws.com/silverKris/silverKrisFunc';
   String privRoom;
@@ -58,13 +60,31 @@ class _MyHomePageState extends State<MyHomePage> {
     dinerRoom3 = "EMPTY";
   }
 
-  void writeData() {
-    dbRef.child('').set({});
-  }
-
   void readData() {
     dbRef.once().then((DataSnapshot dataSnapshot) {
-      print(dataSnapshot.value);
+      log(dataSnapshot.value.toString());
+      var status = dataSnapshot.value;
+      setState(() {
+        privRoom = checkStatus(status['privRoom']['realtime']);
+        restArea1 = checkStatus(status['restArea1']['realtime']);
+        restArea2 = checkStatus(status['restArea2']['realtime']);
+        restArea3 = checkStatus(status['restArea3']['realtime']);
+        studyArea1 = checkStatus(status['studyArea1']['realtime']);
+        studyArea2 = checkStatus(status['studyArea2']['realtime']);
+        studyArea3 = checkStatus(status['studyArea3']['realtime']);
+        dinerRoom1 = checkStatus(status['dinerRoom1']['realtime']);
+        dinerRoom2 = checkStatus(status['dinerRoom2']['realtime']);
+        dinerRoom3 = checkStatus(status['dinerRoom3']['realtime']);
+      });
+    });
+  }
+
+  void listenData() {
+    subscription = dbRef.onChildChanged.listen((event) {
+      setState(() {
+        log(event.snapshot.key.toString());
+        log(event.snapshot.value.toString());
+      });
     });
   }
 
@@ -103,8 +123,16 @@ class _MyHomePageState extends State<MyHomePage> {
   @override
   void initState() {
     readData();
-    _initStatus();
+    // _initStatus();
+    listenData();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    subscription.cancel();
+    super.dispose();
   }
 
   @override
