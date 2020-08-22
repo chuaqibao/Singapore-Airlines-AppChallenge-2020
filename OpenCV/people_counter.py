@@ -1,8 +1,6 @@
 # USAGE
 # To read and write back out to video:
-# python people_counter.py --prototxt mobilenet_ssd/MobileNetSSD_deploy.prototxt \
-#	--model mobilenet_ssd/MobileNetSSD_deploy.caffemodel --input videos/example_01.mp4 \
-#	--output output/output_01.avi
+# python people_counter.py --prototxt mobilenet_ssd/MobileNetSSD_deploy.prototxt --model mobilenet_ssd/MobileNetSSD_deploy.caffemodel --input videos/example_01.mp4 --output output/output_01.avi
 #
 # To read from webcam and write back out to disk:
 # python people_counter.py --prototxt mobilenet_ssd/MobileNetSSD_deploy.prototxt \
@@ -20,6 +18,19 @@ import imutils
 import time
 import dlib
 import cv2
+
+import pyrebase
+
+config = {
+  "apiKey": "AIzaSyBrW9f_4TctNsKWGKd4cjmbBN6AW8wa0GE",
+  "authDomain": "krissilverdb.firebaseapp.com",
+  "databaseURL": "https://krissilverdb.firebaseio.com/",
+  "storageBucket": "krissilverdb.appspot.com",
+  "serviceAccount": "json/krissilverdb-firebase-adminsdk-ty33v-629ebeb601.json"
+}
+
+firebase = pyrebase.initialize_app(config)
+db = firebase.database()
 
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
