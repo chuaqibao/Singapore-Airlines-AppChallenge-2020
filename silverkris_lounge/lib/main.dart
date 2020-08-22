@@ -42,18 +42,26 @@ class _MyHomePageState extends State<MyHomePage> {
   var subscription7;
   var subscription8;
   var subscription9;
-  final _apiGatewayURL =
-      'https://mkr9pqnggb.execute-api.us-east-1.amazonaws.com/silverKris/silverKrisFunc';
-  static String privRoom;
-  static String restArea1;
-  static String restArea2;
-  static String restArea3;
-  static String studyArea1;
-  static String studyArea2;
-  static String studyArea3;
-  static String dinerRoom1;
-  static String dinerRoom2;
-  static String dinerRoom3;
+  String privRoom;
+  String restArea1;
+  String restArea2;
+  String restArea3;
+  String studyArea1;
+  String studyArea2;
+  String studyArea3;
+  String dinerRoom1;
+  String dinerRoom2;
+  String dinerRoom3;
+  int intPrivRoom;
+  int intRestArea1;
+  int intRestArea2;
+  int intRestArea3;
+  int intStudyArea1;
+  int intStudyArea2;
+  int intStudyArea3;
+  int intDinerRoom1;
+  int intDinerRoom2;
+  int intDinerRoom3;
 
   void prepStatus() {
     privRoom = "EMPTY";
@@ -66,6 +74,16 @@ class _MyHomePageState extends State<MyHomePage> {
     dinerRoom1 = "EMPTY";
     dinerRoom2 = "EMPTY";
     dinerRoom3 = "EMPTY";
+    intPrivRoom = 0;
+    intRestArea1 = 0;
+    intRestArea2 = 0;
+    intRestArea3 = 0;
+    intStudyArea1 = 0;
+    intStudyArea2 = 0;
+    intStudyArea3 = 0;
+    intDinerRoom1 = 0;
+    intDinerRoom2 = 0;
+    intDinerRoom3 = 0;
   }
 
   void readData() {
@@ -91,9 +109,11 @@ class _MyHomePageState extends State<MyHomePage> {
     subscription1 = dbRef.child('privRoom').onChildChanged.listen((event) {
       log(event.snapshot.key.toString());
       log(event.snapshot.value.toString());
-      setState(() {
-        privRoom = checkStatus(event.snapshot.value);
-      });
+      if (event.snapshot.key == "realtime")
+        setState(() {
+          privRoom = checkStatus(event.snapshot.value);
+          intPrivRoom += 1;
+        });
     });
   }
 
@@ -101,9 +121,11 @@ class _MyHomePageState extends State<MyHomePage> {
     subscription2 = dbRef.child('restArea1').onChildChanged.listen((event) {
       log(event.snapshot.key.toString());
       log(event.snapshot.value.toString());
-      setState(() {
-        restArea1 = checkStatus(event.snapshot.value);
-      });
+      if (event.snapshot.key == "realtime")
+        setState(() {
+          restArea1 = checkStatus(event.snapshot.value);
+          intRestArea1 += 1;
+        });
     });
   }
 
@@ -111,9 +133,11 @@ class _MyHomePageState extends State<MyHomePage> {
     subscription3 = dbRef.child('restArea2').onChildChanged.listen((event) {
       log(event.snapshot.key.toString());
       log(event.snapshot.value.toString());
-      setState(() {
-        restArea2 = checkStatus(event.snapshot.value);
-      });
+      if (event.snapshot.key == "realtime")
+        setState(() {
+          restArea2 = checkStatus(event.snapshot.value);
+          intRestArea2 += 1;
+        });
     });
   }
 
@@ -121,9 +145,11 @@ class _MyHomePageState extends State<MyHomePage> {
     subscription4 = dbRef.child('restArea3').onChildChanged.listen((event) {
       log(event.snapshot.key.toString());
       log(event.snapshot.value.toString());
-      setState(() {
-        restArea3 = checkStatus(event.snapshot.value);
-      });
+      if (event.snapshot.key == "realtime")
+        setState(() {
+          restArea3 = checkStatus(event.snapshot.value);
+          intRestArea3 += 1;
+        });
     });
   }
 
@@ -131,9 +157,11 @@ class _MyHomePageState extends State<MyHomePage> {
     subscription5 = dbRef.child('dinerRoom1').onChildChanged.listen((event) {
       log(event.snapshot.key.toString());
       log(event.snapshot.value.toString());
-      setState(() {
-        dinerRoom1 = checkStatus(event.snapshot.value);
-      });
+      if (event.snapshot.key == "realtime")
+        setState(() {
+          dinerRoom1 = checkStatus(event.snapshot.value);
+          intDinerRoom1 += 1;
+        });
     });
   }
 
@@ -141,9 +169,11 @@ class _MyHomePageState extends State<MyHomePage> {
     subscription6 = dbRef.child('dinerRoom2').onChildChanged.listen((event) {
       log(event.snapshot.key.toString());
       log(event.snapshot.value.toString());
-      setState(() {
-        dinerRoom2 = checkStatus(event.snapshot.value);
-      });
+      if (event.snapshot.key == "realtime")
+        setState(() {
+          dinerRoom2 = checkStatus(event.snapshot.value);
+          intDinerRoom2 += 1;
+        });
     });
   }
 
@@ -151,9 +181,11 @@ class _MyHomePageState extends State<MyHomePage> {
     subscription7 = dbRef.child('dinerRoom3').onChildChanged.listen((event) {
       log(event.snapshot.key.toString());
       log(event.snapshot.value.toString());
-      setState(() {
-        dinerRoom3 = checkStatus(event.snapshot.value);
-      });
+      if (event.snapshot.key == "realtime")
+        setState(() {
+          dinerRoom3 = checkStatus(event.snapshot.value);
+          intDinerRoom3 += 1;
+        });
     });
   }
 
@@ -161,9 +193,11 @@ class _MyHomePageState extends State<MyHomePage> {
     subscription8 = dbRef.child('studyArea1').onChildChanged.listen((event) {
       log(event.snapshot.key.toString());
       log(event.snapshot.value.toString());
-      setState(() {
-        studyArea1 = checkStatus(event.snapshot.value);
-      });
+      if (event.snapshot.key == "realtime")
+        setState(() {
+          studyArea1 = checkStatus(event.snapshot.value);
+          intStudyArea1 += 1;
+        });
     });
   }
 
@@ -171,9 +205,11 @@ class _MyHomePageState extends State<MyHomePage> {
     subscription9 = dbRef.child('studyArea2').onChildChanged.listen((event) {
       log(event.snapshot.key.toString());
       log(event.snapshot.value.toString());
-      setState(() {
-        studyArea2 = checkStatus(event.snapshot.value);
-      });
+      if (event.snapshot.key == "realtime")
+        setState(() {
+          studyArea2 = checkStatus(event.snapshot.value);
+          intStudyArea2 += 1;
+        });
     });
   }
 
@@ -181,31 +217,12 @@ class _MyHomePageState extends State<MyHomePage> {
     subscription = dbRef.child('studyArea3').onChildChanged.listen((event) {
       log(event.snapshot.key.toString());
       log(event.snapshot.value.toString());
-      setState(() {
-        studyArea3 = checkStatus(event.snapshot.value);
-      });
+      if (event.snapshot.key == "realtime")
+        setState(() {
+          studyArea3 = checkStatus(event.snapshot.value);
+          intStudyArea3 += 1;
+        });
     });
-  }
-
-  Future _initStatus() async {
-    var response = await http.get(this._apiGatewayURL);
-    if (response.statusCode == 200) {
-      var status = jsonDecode(response.body);
-      setState(() {
-        privRoom = checkStatus(status['privRoom']);
-        restArea1 = checkStatus(status['restArea1']);
-        restArea2 = checkStatus(status['restArea2']);
-        restArea3 = checkStatus(status['restArea3']);
-        studyArea1 = checkStatus(status['studyArea1']);
-        studyArea2 = checkStatus(status['studyArea2']);
-        studyArea3 = checkStatus(status['studyArea3']);
-        dinerRoom1 = checkStatus(status['dinerRoom1']);
-        dinerRoom2 = checkStatus(status['dinerRoom2']);
-        dinerRoom3 = checkStatus(status['dinerRoom3']);
-      });
-    } else {
-      throw Exception('Failed to load album');
-    }
   }
 
   String checkStatus(int numPpl) {
