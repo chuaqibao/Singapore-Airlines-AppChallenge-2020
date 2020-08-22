@@ -74,46 +74,42 @@ class _MyHomePageState extends State<MyHomePage> {
 
   @override
   void initState() {
-    _initStatus();
+    // _initStatus();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+        appBar: AppBar(
+          title: Text('SilverKris Lounge Availability', style: TextStyle(color: Colors.black)),
+          centerTitle: true,
+          backgroundColor: Colors.white,),
         body: SafeArea(
             child: Stack(
-      children: <Widget>[
-        Container(
-            decoration: BoxDecoration(
-                image: DecorationImage(
-                    image: AssetImage('assets/sample_lounge_floorplan.png')))),
-        Container(
-            alignment: Alignment(-0.6, -0.3), child: Text('Private Room')),
-        Container(alignment: Alignment(-0.6, -0.2), child: Text('$privRoom')),
-        Container(
-            alignment: Alignment(-0.45, 0.15), child: Text('Diner Room 1')),
-        Container(
-            alignment: Alignment(-0.45, 0.25), child: Text('$dinerRoom1')),
-        Container(alignment: Alignment(0.2, 0.2), child: Text('Diner Room 2')),
-        Container(alignment: Alignment(0.2, 0.3), child: Text('$dinerRoom2')),
-        Container(
-            alignment: Alignment(0.1, -0.45), child: Text('Diner Room 3')),
-        Container(alignment: Alignment(0.1, -0.35), child: Text('$dinerRoom3')),
-        Container(
-            alignment: Alignment(-0.85, 0.45), child: Text('Study Area 1')),
-        Container(
-            alignment: Alignment(-0.85, 0.55), child: Text('$studyArea1')),
-        Container(
-            alignment: Alignment(0.8, -0.45), child: Text('Study Area 2')),
-        Container(alignment: Alignment(0.8, -0.35), child: Text('$studyArea2')),
-        Container(alignment: Alignment(-0.45, 0.7), child: Text('Rest Area 1')),
-        Container(alignment: Alignment(-0.45, 0.8), child: Text('$restArea1')),
-        Container(alignment: Alignment(0.2, 0.7), child: Text('Rest Area 2')),
-        Container(alignment: Alignment(0.2, 0.8), child: Text('$restArea2')),
-        Container(alignment: Alignment(0.1, -0.85), child: Text('Rest Area 3')),
-        Container(alignment: Alignment(0.1, -0.75), child: Text('$restArea3')),
-      ],
-    )));
+          children: <Widget>[
+            Container(
+                decoration: BoxDecoration(
+                    image: DecorationImage(
+                        image: AssetImage('assets/floorplan1.png')))),
+            Container(
+                alignment: Alignment(-0.48, -0.2), child: Text('$privRoom')),
+            Container(
+                alignment: Alignment(-0.3, 0.3), child: Text('$dinerRoom1')),
+            Container(
+                alignment: Alignment(0.1, 0.2), child: Text('$dinerRoom2')),
+            Container(
+                alignment: Alignment(0.1, -0.3), child: Text('$dinerRoom3')),
+            Container(
+                alignment: Alignment(-0.7, 0.55), child: Text('$studyArea1')),
+            Container(
+                alignment: Alignment(0.65, -0.35), child: Text('$studyArea2')),
+            Container(
+                alignment: Alignment(-0.45, 0.8), child: Text('$restArea1')),
+            Container(
+                alignment: Alignment(0.2, 0.8), child: Text('$restArea2')),
+            Container(alignment: Alignment(0.05, -0.8), child: Text('$restArea3')),
+          ],
+        )));
   }
 }
