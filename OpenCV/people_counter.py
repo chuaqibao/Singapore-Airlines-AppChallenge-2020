@@ -1,6 +1,6 @@
 # USAGE
 # To read and write back out to video:
-# python people_counter.py --prototxt mobilenet_ssd/MobileNetSSD_deploy.prototxt --model mobilenet_ssd/MobileNetSSD_deploy.caffemodel --input videos/example_01.mp4 --output output/output_01.avi
+# python people_counter.py --prototxt mobilenet_ssd/MobileNetSSD_deploy.prototxt --model mobilenet_ssd/MobileNetSSD_deploy.caffemodel --input videos/dinerRoom1.mp4 --output output/output_01.avi
 #
 # To read from webcam and write back out to disk:
 # python people_counter.py --prototxt mobilenet_ssd/MobileNetSSD_deploy.prototxt \
@@ -32,6 +32,10 @@ config = {
 firebase = pyrebase.initialize_app(config)
 db = firebase.database()
 
+users = db.child("dinerRoom2").get()
+print(users.val())
+
+
 # construct the argument parse and parse the arguments
 ap = argparse.ArgumentParser()
 # ap.add_argument("-p", "--prototxt", required=True,
@@ -57,15 +61,7 @@ CLASSES = ["background", "aeroplane", "bicycle", "bird", "boat",
 
 # load our serialized model from disk
 print("[INFO] loading model...")
-net = cv2.dnn.readNetFromCaffe("mobilenet_ssd/MobileNetSSD_deploy.prototxt", "mobilenet_ssd/MobileNetSSD_deploy.caffemode")
-
-"""
-# if a video path was not supplied, grab a reference to the webcam
-if not args.get("input", False):
-    print("[INFO] starting video stream...")
-    vs = VideoStream(src=0).start()
-    time.sleep(2.0)
-"""
+net = cv2.dnn.readNetFromCaffe("mobilenet_ssd/MobileNetSSD_deploy.prototxt", "mobilenet_ssd/MobileNetSSD_deploy.caffemodel")
 
 # otherwise, grab a reference to the video file
 #else:
@@ -102,11 +98,11 @@ totalFrames = 0
 # start the frames per second throughput estimator
 fps = FPS().start()
 
-framenumber = -1 
-numenteredlist = []
+#framenumber = -1 
+numenteredlist = 0
 # loop over frames from the video stream
 while True:
-    framenumber+=1
+    #framenumber+=1
     # grab the next frame and handle if we are reading from either
     # VideoCapture or VideoStream
     frame = vs.read()
@@ -127,12 +123,6 @@ while True:
     if W is None or H is None:
         (H, W) = frame.shape[:2]
 
-    # if we are supposed to be writing a video to disk, initialize
-    # the writer
-    if args["output"] is not None and writer is None:
-        fourcc = cv2.VideoWriter_fourcc(*"MJPG")
-        writer = cv2.VideoWriter(args["output"], fourcc, 30,
-                                 (W, H), True)
 
     # initialize the current status along with our list of bounding
     # box rectangles returned by either (1) our object detector or
@@ -240,17 +230,6 @@ while True:
         # otherwise, there is a trackable object so we can utilize it
         # to determine direction
         else:
-            # # the difference between the y-coordinate of the *current*
-            # # centroid and the mean of *previous* centroids will tell
-            # # us in which direction the object is moving (negative for
-            # # 'up' and positive for 'down')
-
-            # if objectID not in duration and objectID in entered:
-            #     duration[objectID] = 1
-            #     print(duration)
-            # elif objectID in duration and objectID in entered:
-            #     duration[objectID] += 1
-            #     print(duration)
 
             if bottomrightx > centroid[0] > topleftx and bottomrighty > centroid[1] > toplefty:
                 if objectID not in entered:
@@ -274,31 +253,20 @@ while True:
             if index not in objects:
                 entered.remove(index)
 
-    # construct a tuple of information we will be displaying on the
-    # frame
-    # info = [
-    #     ("Entered", len(duration)),
-    #     ("Cross box", len(entered)),
-    #     ("Up", totalUp),
-    #     ("Down", totalDown),
-    #     ("Status", status),
-    # ]
-
-     info = [
+    info = [
         ("Entered", len(duration)),
         ("Number", len(entered)),
         ("Status", status)
     ]
 
     # push into db only if the number of people who entered changes
-    if framenumber ==0:
-        numenteredlist.append(len(entered))
-    else:
-        # compare current number to previous number
-        if len(entered) != numenteredlist.get(framenumber-1):
-            #push to db
-            #db.child("use").child("Morty").update({"name": "Mortiest Morty"})
-            numenteredlist.append(len(entered))
+
+    if len(entered) != numenteredlist:
+        #push to db
+        data = {"realtime": len(entered)}
+        db.child(areaname).update(data)
+        numenteredlist = len(entered) 
+        print("push to db", len(entered))
 
     # loop over the info tuples and draw them on our frame
     for (i, (k, v)) in enumerate(info):
