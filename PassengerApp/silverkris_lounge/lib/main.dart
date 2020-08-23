@@ -121,6 +121,10 @@ class _MyHomePageState extends State<MyHomePage> {
         log("privRoom: " + intPrivRoom.toString());
         check('privRoom', intPrivRoom);
       }
+      if (event.snapshot.key == "needattention" &&
+          event.snapshot.value == false) {
+        intPrivRoom = 0;
+      }
     });
   }
 
@@ -134,6 +138,10 @@ class _MyHomePageState extends State<MyHomePage> {
           intRestArea1 += 1;
           check('restArea1', intRestArea1);
         });
+      if (event.snapshot.key == "needattention" &&
+          event.snapshot.value == false) {
+        intRestArea1 = 0;
+      }
     });
   }
 
@@ -147,6 +155,10 @@ class _MyHomePageState extends State<MyHomePage> {
           intRestArea2 += 1;
           check('restArea2', intRestArea2);
         });
+      if (event.snapshot.key == "needattention" &&
+          event.snapshot.value == false) {
+        intRestArea2 = 0;
+      }
     });
   }
 
@@ -160,6 +172,10 @@ class _MyHomePageState extends State<MyHomePage> {
           intRestArea3 += 1;
           check('restArea3', intRestArea3);
         });
+      if (event.snapshot.key == "needattention" &&
+          event.snapshot.value == false) {
+        intRestArea3 = 0;
+      }
     });
   }
 
@@ -173,6 +189,10 @@ class _MyHomePageState extends State<MyHomePage> {
           intDinerRoom1 += 1;
           check('dinerRoom1', intDinerRoom1);
         });
+      if (event.snapshot.key == "needattention" &&
+          event.snapshot.value == false) {
+        intDinerRoom1 = 0;
+      }
     });
   }
 
@@ -186,6 +206,10 @@ class _MyHomePageState extends State<MyHomePage> {
           intDinerRoom2 += 1;
           check('dinerRoom2', intDinerRoom2);
         });
+      if (event.snapshot.key == "needattention" &&
+          event.snapshot.value == false) {
+        intDinerRoom2 = 0;
+      }
     });
   }
 
@@ -199,6 +223,10 @@ class _MyHomePageState extends State<MyHomePage> {
           intDinerRoom3 += 1;
           check('dinerRoom3', intDinerRoom3);
         });
+      if (event.snapshot.key == "needattention" &&
+          event.snapshot.value == false) {
+        intDinerRoom3 = 0;
+      }
     });
   }
 
@@ -212,6 +240,10 @@ class _MyHomePageState extends State<MyHomePage> {
           intStudyArea1 += 1;
           check('studyArea1', intStudyArea1);
         });
+      if (event.snapshot.key == "needattention" &&
+          event.snapshot.value == false) {
+        intStudyArea1 = 0;
+      }
     });
   }
 
@@ -225,6 +257,10 @@ class _MyHomePageState extends State<MyHomePage> {
           intStudyArea2 += 1;
           check('studyArea2', intStudyArea2);
         });
+      if (event.snapshot.key == "needattention" &&
+          event.snapshot.value == false) {
+        intStudyArea2 = 0;
+      }
     });
   }
 
@@ -238,6 +274,10 @@ class _MyHomePageState extends State<MyHomePage> {
           intStudyArea3 += 1;
           check('studyArea3', intStudyArea3);
         });
+      if (event.snapshot.key == "needattention" &&
+          event.snapshot.value == false) {
+        intStudyArea3 = 0;
+      }
     });
   }
 
